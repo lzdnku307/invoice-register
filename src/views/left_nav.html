@@ -1,0 +1,48 @@
+<div class="left-nav">
+  <div class="company-info">
+    <img src="/images/logo.jpg" />
+    <h3>清华同方</h3>
+  </div>
+  <% var url1, url2, tag1, tag2; %>
+    <% if(userInfo.type === 1) { %>
+      <% url1 = '/user/add'; %>
+      <% url2 = '/user/history'; %>
+      <% tag1 = '添加用户'; %>
+      <% tag2 = '用户发票'; %>
+    <% } else { %>
+      <% url1 = '/invoice/add'; %>
+      <% url2 = '/invoice/history'; %>
+      <% tag1 = '登记发票'; %>
+      <% tag2 = '历史记录'; %>
+    <% }%>
+  <% if(selected === 1) {%>
+    <div class="option-wrapper-active" onclick="location.href='<%= url1 %>';">
+  <% } else { %>
+    <div class="option-wrapper" onclick="location.href='<%= url1 %>';">
+  <% } %>
+    <div class="icon-wrapper">
+      <div class="img licence-img"></div>
+    </div>
+    <span class="option-wrapper-span"><%= tag1 %></span>
+  </div>
+  <% if(selected === 2) {%>
+      <div class="option-wrapper-active" onclick="location.href='<%= url2 %>';">
+   <% } else { %>
+        <div class="option-wrapper" onclick="location.href='<%= url2 %>';">
+   <% } %>
+    <div class="icon-wrapper">
+      <div class="img check-img"></div>
+    </div>
+    <span class="option-wrapper-span"><%= tag2 %></span>
+  </div>
+   <% if(selected === 3) {%>
+        <div class="option-wrapper-active" onclick="location.href='/user/setting';">
+   <% } else { %>
+          <div class="option-wrapper" onclick="location.href='/user/setting';">
+    <% } %>
+   <div class="icon-wrapper">
+     <div class="img setting-img"></div>
+   </div>
+   <span class="option-wrapper-span">个人设置</span>
+    </div>
+</div>

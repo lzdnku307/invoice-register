@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>个人设置</title>
+  <link rel="stylesheet" href="/css/setting.css" type="text/css"/>
+  <link rel="stylesheet" href="/css/header.css" type="text/css" />
+  <link rel="stylesheet" href="/css/left_nav.css" type="text/css" />
+  <link rel="stylesheet" href="/css/pagination.css" type="text/css" />
+  <script type="text/javascript" src="/js/third/jquery-3.1.0.min.js"></script>
+  <script type="text/javascript" src="/js/third/pagination.min.js"></script>
+  <script type="text/javascript" src="/js/common.js"></script>
+</head>
+<body>
+<!-- 头部-->
+<% include header.html %>
+<!-- 主体-->
+<div class="content-wrapper">
+  <!-- 左边导航 -->
+  <% include left_nav.html %>
+  <!-- 右侧内容区 -->
+  <div class="right-content">
+    <div class="setting-container">
+      <h3>修改密码</h3>
+      <div class="password-item">
+        <span>输入原密码: </span>
+        <input type="password" id="old-password" placeholder="原密码"/>
+      </div>
+      <div class="password-item">
+        <span>输入新密码: </span>
+        <input type="password" id="new-password" placeholder="至少6位"/>
+      </div>
+      <div class="password-item">
+        <span>确认新密码: </span>
+        <input type="password" id="confirm-password" placeholder="确认"/>
+      </div>
+      <a id="confirm-button">确认</a>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("#confirm-button").bind('click', function () {
+      var oldPassword = $("#old-password").val();
+      var newPassword = $("#new-password").val();
+      var confirmPassword = $("#confirm-password").val();
+
+      if(!oldPassword) {
+        alert('请输入原始密码!');
+        $("#old-password").focus();
+        return;
+      }
+
+      if(!newPassword) {
+        alert('请输入新密码!');
+        $("#new-password").focus();
+        return;
+      }
+
+      if(!confirmPassword) {
+        alert('请输入确认新密码!');
+        $("#confirm-password").focus();
+        return;
+      }
+
+      if(newPassword !== confirmPassword) {
+        alert('两次输入的新密码不一致,请重新输入!');
+        $("#new-password").val = '';
+        $("#confirm-password").val = '';
+        $("#new-password").focus();
+        return;
+      }
+
+      if(newPassword.length < 6) {
+        alert('密码至少需要6位!');
+        $("#new-password").val = '';
+        $("#confirm-password").val = '';
+        $("#new-password").focus();
+        return;
+      }
+
+      var userName = $(".user-name").html();
+
+      $.ajax({
+        url: '/setting/password',
+        type: 'post',
+        dataType: 'json',
+        data: {
+          oldPassword: oldPassword,
+          newPassword: newPassword,
+          userName: userName
+        },
+        success: function (res) {
+          if(res.code !== 0) {
+            return alert('修改密码失败: ' + res.msg);
+          }
+          alert('修改成功!');
+          location.reload();
+        },
+        error: function () {
+          alert('网络错误!请稍后再试!');
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>

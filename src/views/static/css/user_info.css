@@ -1,0 +1,89 @@
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #f5f5f5;
+}
+
+.content-wrapper {
+  width: 1054px;
+  margin: 20px auto 0;
+}
+
+.right-content {
+  position: relative;
+  float: right;
+  width: 840px;
+  padding-bottom: 20px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.invoice-add-content {
+  padding-left: 20px;
+  width: 300px;
+}
+
+.invoice-add-content h2 {
+  text-align: center;
+}
+
+.input-item {
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.input-item span {
+  float: left;
+  width: 100px;
+}
+
+.input-item input {
+  float: left;
+  width: 200px;
+}
+
+.input-item textarea {
+  width: 200px;
+  height: 50px;
+}
+
+.button-add {
+  display: block;
+  width: 80px;
+  height: 30px;
+  background-color: #3cc0ee;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  line-height: 30px;
+  border-radius: 4px;
+  margin-top: 20px;
+  margin-left: 100px;
+}
+
+.button-modify {
+  float: left;
+  width: 80px;
+  height: 30px;
+  background-color: #3cc0ee;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  line-height: 30px;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+.button-delete {
+  float: left;
+  width: 80px;
+  height: 30px;
+  background-color: #3cc0ee;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  line-height: 30px;
+  border-radius: 4px;
+  margin-top: 20px;
+  margin-left: 50px;
+}

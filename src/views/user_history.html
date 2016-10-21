@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>用户发票</title>
+  <link rel="stylesheet" href="/css/user_history.css" type="text/css"/>
+  <link rel="stylesheet" href="/css/header.css" type="text/css" />
+  <link rel="stylesheet" href="/css/left_nav.css" type="text/css" />
+  <link rel="stylesheet" href="/css/pagination.css" type="text/css" />
+  <script type="text/javascript" src="/js/third/jquery-3.1.0.min.js"></script>
+  <script type="text/javascript" src="/js/third/pagination.min.js"></script>
+  <script type="text/javascript" src="/js/common.js"></script>
+</head>
+<body>
+<!-- 头部-->
+<% include header.html %>
+<!-- 主体-->
+<div class="content-wrapper">
+  <!-- 左边导航 -->
+  <% include left_nav.html %>
+  <!-- 右侧内容区 -->
+  <div class="right-content">
+    <table>
+      <thead>
+      <tr class="table-header">
+        <th>用户名</th>
+        <th>发票总量</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody id="table-content">
+
+      </tbody>
+    </table>
+    <div class="footer">
+      <div id="page-bar" class="page-bar"></div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  var totalNumber = <%= totalNumber %>;
+  $(document).ready(function () {
+    $('#page-bar').pagination({
+      dataSource: '/user/history/data',
+      pageSize: 10,
+      totalNumber: totalNumber,
+      locator: 'data',
+      callback: function(data, pagination) {
+        generateTable(data);
+      }
+    });
+  });
+
+  function generateTable (data) {
+    $("#table-content").empty();
+    for(var i = 0; i < data.length; i++) {
+      var trHtml = '<td title="' + data[i].name + '">' + data[i].name + '</td>';
+      trHtml += '<td title="' + data[i].count + '">' + data[i].count + '</td>';
+      trHtml += data[i].count == 0 ? ('<td>--</td>')
+        : '<td><a href="/user/' + data[i].id + '/export" target="_blank">导出</a></td>';
+      $('<tr class="list">' + trHtml + '</tr>').appendTo($('#table-content'));
+    }
+  };
+</script>
+</body>
+</html>

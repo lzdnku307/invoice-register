@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>用户发票</title>
+  <link rel="stylesheet" href="/css/invoice_history.css" type="text/css"/>
+  <link rel="stylesheet" href="/css/header.css" type="text/css" />
+  <link rel="stylesheet" href="/css/left_nav.css" type="text/css" />
+  <link rel="stylesheet" href="/css/pagination.css" type="text/css" />
+  <script type="text/javascript" src="/js/third/jquery-3.1.0.min.js"></script>
+  <script type="text/javascript" src="/js/third/pagination.min.js"></script>
+  <script type="text/javascript" src="/js/common.js"></script>
+</head>
+<body>
+<!-- 头部-->
+<% include header.html %>
+<!-- 主体-->
+<div class="content-wrapper">
+  <!-- 左边导航 -->
+  <% include left_nav.html %>
+  <!-- 右侧内容区 -->
+  <div class="right-content">
+    <table>
+      <thead>
+      <tr class="table-header">
+        <th class="th-company">单位名称</th>
+        <th class="th-name">收件人姓名</th>
+        <th class="th-phone">收件人手机</th>
+        <th class="th-quantity">数量</th>
+        <th class="th-full-name">汇款人全称</th>
+        <th class="th-address">详细地址</th>
+        <th class="th-note">备注</th>
+        <th class="th-date">创建日期</th>
+        <th class="th-option">查看</th>
+      </tr>
+      </thead>
+      <tbody id="table-content">
+
+      </tbody>
+    </table>
+    <div class="footer">
+      <div id="page-bar" class="page-bar"></div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  var totalNumber = <%= totalNumber %>;
+  $(document).ready(function () {
+    $('#page-bar').pagination({
+      dataSource: '/invoice/history/data',
+      pageSize: 10,
+      totalNumber: totalNumber,
+      locator: 'data',
+      callback: function(data, pagination) {
+        generateTable(data);
+      }
+    });
+  });
+
+  function generateTable (data) {
+    $("#table-content").empty();
+    for(var i = 0; i < data.length; i++) {
+      var trHtml = '<td title="' + data[i].company + '">' + data[i].company + '</td>';
+      trHtml += '<td title="' + data[i].name + '">' + data[i].name + '</td>';
+      trHtml += '<td title="' + data[i].phone + '">' + data[i].phone + '</td>';
+      trHtml += '<td title="' + data[i].quality + '">' + data[i].quantity + '</td>';
+      trHtml += '<td title="' + data[i].fullName + '">' + data[i].fullName + '</td>';
+      trHtml += '<td title="' + data[i].address + '">' + data[i].address + '</td>';
+      trHtml += '<td title="' + (data[i].note || '--') + '">' + (data[i].note || '--') + '</td>';
+      trHtml += '<td title="' + data[i].date + '">' + data[i].date + '</td>';
+      trHtml += data[i].count == 0 ? ('<td>--</td>')
+        : '<td><a href="/invoice/' + data[i].id + '/detail">详细</a></td>';
+      $('<tr class="list">' + trHtml + '</tr>').appendTo($('#table-content'));
+    }
+  };
+</script>
+</body>
+</html>

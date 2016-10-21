@@ -1,0 +1,105 @@
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #f5f5f5;
+}
+
+.content-wrapper {
+  width: 1054px;
+  margin: 20px auto 0;
+}
+
+.right-content {
+  position: relative;
+  float: right;
+  width: 840px;
+  padding-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: separate;
+  table-layout: fixed;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 0 1px #aaa;
+  overflow: hidden;
+  font-size: 12px;
+}
+
+.table-header {
+  background-color: #c7e7fd;
+  font-size: 14px;
+  line-height: 46px;
+}
+
+tr {
+  border: 1px solid;
+}
+
+.th-company {
+  width: 70px;
+}
+
+.th-name {
+  width: 50px;
+}
+
+.th-address {
+  width: 150px;
+}
+
+.th-date {
+  width: 120px;
+}
+
+.th-note {
+  width: 150px;
+}
+
+.th-phone {
+  width: 100px;
+}
+
+.th-quantity {
+  width: 50px;
+}
+
+.th-full-name {
+  width: 50px;
+}
+
+td a {
+  color: #333;
+}
+
+td a:hover {
+  color: #3cc0ee;
+}
+
+td {
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 46px;
+}
+
+.list {
+  cursor: pointer;
+}
+
+.list:hover {
+  background-color: #f5f5f5;
+}
+
+.page-bar {
+  overflow: hidden;
+  float: right;
+}
+
+.footer {
+  overflow: hidden;
+  margin-top: 10px;
+}

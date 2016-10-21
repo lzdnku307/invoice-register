@@ -1,0 +1,210 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>授权</title>
+  <link rel="stylesheet" href="/css/licence.css" type="text/css"/>
+  <link rel="stylesheet" href="/css/header.css" type="text/css" />
+  <link rel="stylesheet" href="/css/left_nav.css" type="text/css" />
+  <script type="text/javascript" src="/js/third/jquery-3.1.0.min.js"></script>
+  <script type="text/javascript" src="/js/common.js"></script>
+</head>
+<body>
+<!-- 头部-->
+<% include header.html %>
+<!-- 主体-->
+  <div class="content-wrapper">
+    <!-- 左边导航 -->
+    <% include left_nav.html %>
+    <!-- 右侧内容区 -->
+    <div class="right-content">
+      <!-- 授权页面 -->
+      <div class="licence-content">
+        <div class="licence-item">
+          <h3>项目信息</h3>
+          <div class="applicant-wrapper">
+            <span>申请人:</span>
+            <input type="text" id="applicant"/>
+          </div>
+          <div class="project-desc-wrapper">
+            <span>项目概要说明(不少于50个字):</span>
+            <textarea id="description"></textarea>
+          </div>
+          <hr />
+        </div>
+        <div class="licence-item">
+          <h3>授权参数设置</h3>
+          <div class="service-id-wrapper">
+            <span>服务id:</span>
+            <input type="text" id="service-id"/>
+          </div>
+          <div class="check-box">
+            <div class="check-box-wrap">
+              <div class="check-box-item">
+                <input type="radio" name="permission-type" value="1" checked/>
+                <span>临时授权</span>
+              </div>
+              <div class="check-box-item">
+                <input type="radio" name="permission-type" value="2" />
+                <span>永久授权</span>
+              </div>
+            </div>
+            <div class="check-box-wrap">
+              <div class="check-box-item">
+                <input type="radio" name="version" value="1" checked/>
+                <span>测试版</span>
+              </div>
+              <div class="check-box-item">
+                <input type="radio" name="version" value="2" />
+                <span>企业版</span>
+              </div>
+            </div>
+          </div>
+          <div class="normal-input">
+            <span>有效时间(天)：</span>
+            <input type="number" id="expired"/>
+            （临时授权不能大于180天）
+          </div>
+          <div class="normal-input">
+            <span>物理CPU数量：</span>
+            <input type="number" id="physical-cpu"/>
+          </div>
+          <div class="normal-input">
+            <span>虚拟CPU数量：</span>
+            <input type="number" id="virtual-cpu"/>
+          </div>
+          <div class="normal-input">
+            <span>并发用户数量：</span>
+            <input type="number" id="concurrent-number"/>
+          </div>
+          <div class="normal-input">
+            <span>虚拟主机数量：</span>
+            <input type="number" id="virtual-machine-number"/>
+          </div>
+          <hr />
+          <div class="code-wrapper">
+            <h3>授权码</h3>
+            <textarea disabled id="licence-code"></textarea>
+            <div class="button-wrapper">
+              <a href="javascript:;" class="button" >生成授权码</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $(".button").bind('click', function () {
+        //获取数据
+        //申请人
+        var applicant = $("#applicant").val();
+        if(!applicant.length) {
+          alert('请输入申请人');
+          $("#applicant").focus();
+          return;
+        }
+
+        //项目描述
+        var description = $("#description").val();
+        if(!description.length || description.length < 50) {
+          alert(description.length === 0 ? '请输入项目描述' : '项目描述不能少于50个字');
+          $("#description").focus();
+          return;
+        }
+
+        //服务id
+        var serviceId = $("#service-id").val();
+        if(!serviceId) {
+          alert('请输入服务id');
+          $("#service-id").focus();
+          return;
+        }
+
+        //授权类型
+        var permissionType = $("input[name='permission-type']:checked").val();
+
+        //版本
+        var version = $("input[name='version']:checked").val();
+
+        //有效时间
+        var expired = $("#expired").val();
+
+        if(!expired || expired <= 0) {
+          alert('请输入天数');
+          $("#expired").focus();
+          return;
+        }
+
+        //临时授权不能大于180天
+        if(permissionType == 1 && expired > 180) {
+          alert('临时授权不能大于180天');
+          $("#expired").focus();
+          return;
+        }
+
+        //物理cpu数
+        var physicalCpu = $("#physical-cpu").val();
+        if(!physicalCpu || physicalCpu <= 0) {
+          alert('请输入正整数');
+          $("#physical-cpu").focus();
+          return;
+        }
+
+        //虚拟CPU数量
+        var virtualCpu = $("#virtual-cpu").val();
+        if(!virtualCpu || virtualCpu <= 0) {
+          alert('请输入正整数');
+          $("#virtual-cpu").focus();
+          return;
+        }
+
+        //并发用户数量
+        var concurrentNumber = $("#concurrent-number").val();
+        if(!concurrentNumber || concurrentNumber <= 0) {
+          alert('请输入正整数');
+          $("#concurrent-number").focus();
+          return;
+        }
+
+        //虚拟机数量
+        var virtualMachineNumber = $("#virtual-machine-number").val();
+        if(!virtualMachineNumber || virtualMachineNumber <= 0) {
+          alert('请输入正整数');
+          $("#virtual-machine-number").focus();
+          return;
+        }
+
+        //授权申请
+        $.ajax({
+          url: '/licence/generate',
+          type: 'post',
+          dataType: 'json',
+          data: {
+            applicant: applicant,
+            serviceId: serviceId,
+            description: description,
+            permissionType: permissionType,
+            version: version,
+            expired: expired,
+            physicalCpu: physicalCpu,
+            virtualCpu: virtualCpu,
+            concurrentNumber: concurrentNumber,
+            virtualMachineNumber: virtualMachineNumber
+          },
+          success: function (res) {
+            if(res.code !== 0) {
+              return alert(res.msg);
+            }
+            $("#licence-code").html(res.data.licenceCode);
+          },
+          error: function () {
+            alert('网络错误,请稍后再试!')
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

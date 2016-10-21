@@ -1,0 +1,238 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>发票录入</title>
+  <link rel="stylesheet" href="/css/invoice_info.css" type="text/css"/>
+  <link rel="stylesheet" href="/css/header.css" type="text/css" />
+  <link rel="stylesheet" href="/css/left_nav.css" type="text/css" />
+  <script type="text/javascript" src="/js/third/jquery-3.1.0.min.js"></script>
+  <script type="text/javascript" src="/js/common.js"></script>
+</head>
+<body>
+<!-- 头部-->
+<% include header.html %>
+<!-- 主体-->
+<div class="content-wrapper">
+  <!-- 左边导航 -->
+  <% include left_nav.html %>
+  <!-- 右侧内容区 -->
+  <div class="right-content">
+    <!-- 录入发票页面 -->
+    <div class="invoice-add-content">
+      <h2>开票信息</h2>
+      <div class="input-item">
+        <span>单位名称: </span>
+        <input type="text" id="company" />
+      </div>
+      <div class="input-item">
+        <span>收件人姓名: </span>
+        <input type="text" id="name" />
+      </div>
+      <div class="input-item">
+        <span>收件人手机: </span>
+        <input type="text" id="phone"/>
+      </div>
+      <div class="input-item">
+        <span>数量: </span>
+        <input type="number" id="quantity"/>
+      </div>
+      <div class="input-item">
+        <span>汇款人全称: </span>
+        <input type="text" id="full-name" />
+      </div>
+      <div class="input-item">
+        <span>详细地址: </span>
+        <textarea id="address"></textarea>
+      </div>
+      <div class="input-item">
+        <span>备注: </span>
+        <textarea id="note"></textarea>
+      </div>
+      <div>
+        <% if (pageType === 'add') {%>
+        <a id="button-add" href="javascript:;" class="button-add">确定</a>
+        <% } else { %>
+        <a id="button-modify" href="javascript:;" class="button-modify">编辑</a>
+        <a id="button-delete" href="javascript:;" class="button-delete">删除</a>
+        <input value="<%= info.id %>" hidden  id="invoiceId"/>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function getData() {
+    var company = $('#company').val();
+    var name = $('#name').val();
+    var fullName = $('#full-name').val();
+    var address = $('#address').val();
+    var phone = $('#phone').val();
+    var quantity = $('#quantity').val();
+    var note = $('#note').val();
+
+    if(!company) {
+      alert('请输入单位名称');
+      $('#company').focus();
+      return;
+    }
+    if(!name) {
+      alert('请输入收件人姓名');
+      $('#name').focus();
+      return;
+    }
+    if(!phone) {
+      alert('请输入收件人手机');
+      $('#phone').focus();
+      return;
+    }
+    if(!quantity) {
+      alert('请输入数量');
+      $('#quantity').focus();
+      return;
+    }
+    if(!fullName) {
+      alert('请输入单位名称');
+      $('#full-name').focus();
+      return;
+    }
+    if(!address) {
+      alert('请输入详细地址');
+      $('#address').focus();
+      return;
+    }
+
+    return {
+      name: name,
+      fullName: fullName,
+      phone: phone,
+      address: address,
+      company: company,
+      quantity: quantity,
+      note: note || ''
+    };
+  }
+
+  function disableInput () {
+    $('#company').attr('disabled', true);
+    $('#name').attr('disabled', true);
+    $('#address').attr('disabled', true);
+    $('#full-name').attr('disabled', true);
+    $('#phone').attr('disabled', true);
+    $('#quantity').attr('disabled', true);
+    $('#note').attr('disabled', true);
+  }
+
+  function enableInput () {
+    $('#company').removeAttr('disabled');
+    $('#name').removeAttr('disabled');
+    $('#address').removeAttr('disabled');
+    $('#full-name').removeAttr('disabled');
+    $('#phone').removeAttr('disabled');
+    $('#quantity').removeAttr('disabled');
+    $('#note').removeAttr('disabled');
+  }
+
+  var pageType = '<%= pageType %>';
+  $(document).ready(function () {
+    if(pageType === 'add') {
+      $(".button-add").bind('click', function () {
+        var data = getData();
+        if(!data) return;
+
+        $.ajax({
+          url: '/invoice/add',
+          type: 'POST',
+          dataType: 'json',
+          data: data,
+          success: function (res) {
+            if(!res || res.code !== 0) {
+              alert('请求出错:' + (res ? res.msg : '未知错误!'));
+              return;
+            }
+            location.href = '/invoice/history';
+          },
+          error: function () {
+            alert('请求失败!请稍后再试!');
+            return;
+          }
+        });
+      });
+    } else {
+      disableInput();
+
+      $('#company').val('<%= info.company %>');
+      $('#name').val('<%= info.name %>');
+      $('#address').val('<%= info.address %>');
+      $('#full-name').val('<%= info.fullName %>');
+      $('#phone').val('<%= info.phone %>');
+      $('#quantity').val('<%= info.quantity %>');
+      $('#note').val('<%= info.note %>');
+
+      $(".button-modify").bind('click', function () {
+        var buttonText = $('#button-modify').html();
+        if(buttonText === '编辑') {
+          enableInput();
+          $('#company').focus();
+          $('#button-modify').html('保存');
+          $('#button-delete').html('取消');
+          return;
+        }
+
+        var data = getData();
+        if(!data) return;
+
+        $.ajax({
+          url: '/invoice/<%= info.id %>/modify',
+          type: 'POST',
+          dataType: 'json',
+          data: data,
+          success: function (res) {
+            if(!res || res.code !== 0) {
+              alert('请求出错:' + (res ? res.msg : '未知错误!'));
+              return;
+            }
+
+            location.reload();
+          },
+          error: function () {
+            alert('请求失败!请稍后再试!');
+            return;
+          }
+        });
+      });
+
+      $('#button-delete').bind('click', function () {
+        var buttonText = $('#button-delete').html();
+        if(buttonText === '取消') {
+          location.reload();
+          return;
+        }
+
+        if(confirm('确认删除记录?')) {
+          $.ajax({
+            url: '/invoice/<%= info.id %>/delete',
+            type: 'POST',
+            dataType: 'json',
+            success: function (res) {
+              if(!res || res.code !== 0) {
+                alert('请求出错:' + (res ? res.msg : '未知错误!'));
+                return;
+              }
+              alert('删除成功!');
+              location.href = '/invoice/history';
+            },
+            error: function () {
+              alert('请求失败!请稍后再试!');
+              return;
+            }
+          });
+        }
+      });
+    }
+
+  });
+</script>
+
+</body>
+</html>
